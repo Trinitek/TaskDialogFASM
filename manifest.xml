@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
-    <assemblyIdentity version="1.0.0.0" name="TaskDialogDemo.exe"/>
+    <assemblyIdentity version="1.0.0.0" name="Trinitek.TaskDialogDemo"/>
     <trustInfo xmlns="urn:schemas-microsoft-com:asm.v2">
         <security>
             <requestedPrivileges xmlns="urn:schemas-microsoft-com:asm.v3">
@@ -23,6 +23,7 @@
         </application> 
     </compatibility>
     <dependency>
+        <!-- Enable visual styles (Required to access version of COMCTL32.DLL that has TaskDialog) -->
         <dependentAssembly>
             <assemblyIdentity
                 type="win32"
