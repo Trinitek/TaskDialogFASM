@@ -4,6 +4,7 @@ entry start
 
     include "win64a.inc"
     include "COMCTL32_TD_DEF.inc"
+    include "resource.inc"
 
 section '.text' code readable executable
     
