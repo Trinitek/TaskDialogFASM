@@ -44,21 +44,4 @@ section '.idata' import data readable writeable
     include 'api/kernel32.inc'
     include 'COMCTL32_TD_API.inc'
     
-section '.rsrc' data readable resource from 'TaskDialogDemo.res'
-
-    ;directory   RT_MANIFEST, manifest ;,\
-    ;;            RT_DIALOG, dialogs
-    ;
-    ;resource    manifest,\
-    ;            1, LANG_NEUTRAL, manifestfile
-    ;
-    ;resdata     manifestfile
-    ;    file    'manifest.xml'
-    ;endres
-    ;
-    ;;resource    dialogs,\
-    ;;            LANG_ENGLISH + SUBLANG_DEFAULT, dialogsetup
-    ;;            
-    ;;include     "DialogResource.inc"
-    ;
-    ;resource    from "TaskDialogDemo.res"
+section '.rsrc' data readable resource from 'resources.res'
