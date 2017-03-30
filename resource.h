@@ -14,12 +14,13 @@
 #define IDC_CANCELBUTTON                1008
 #define IDC_RETRYBUTTON                 1009
 #define IDC_CLOSEBUTTON                 1010
-#define IDC_ERRORICON                   1011
-#define IDC_INFORMATIONICON             1012
-#define IDC_SHIELDICON                  1013
-#define IDC_NONEICON                    1014
+#define IDC_NONEICON                    1011
+#define IDC_ERRORICON                   1012
+#define IDC_INFORMATIONICON             1013
+#define IDC_SHIELDICON                  1014
 #define IDC_WARNINGICON                 1015
-#define IDSHOW                          1016
+#define IDC_SHOW                        1016
+#define IDC_CLOSE                       1017
 #define IDC_STATIC                      -1
 
 // Next default values for new objects
