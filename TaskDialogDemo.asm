@@ -92,12 +92,15 @@ section '.text' code readable executable
                 [workArea.bottom],\
                 0,\
                 0,\
-                SWP_NOSIZE or SWP_NOZORDER
+                SWP_NOSIZE or SWP_NOZORDER or SWP_SHOWWINDOW
                 
-        ; Used instead of SWP_SHOWWINDOW flag above in order to post WM_SHOWWINDOW message
-        invoke  ShowWindow,\
+        ; Even though WM_INITDIALOG is sent once when CreateDialogParamW is called,
+        ; any changes to the controls are not saved. So, we send the init message twice.
+        invoke  SendMessage,\
                 [dHandle],\
-                SW_SHOW
+                WM_INITDIALOG,\
+                0,\
+                0
         
         .messageLoop:
             ; Get next GUI message
@@ -134,8 +137,8 @@ section '.text' code readable executable
         mov [lParam], r9
             
         mov rax, [dMessage]
-        cmp eax, WM_SHOWWINDOW
-        je .wmShowWindow
+        cmp eax, WM_INITDIALOG
+        je  .wmInitDialog
         cmp eax, WM_COMMAND
         je .wmCommand
         cmp eax, WM_DESTROY
@@ -151,9 +154,7 @@ section '.text' code readable executable
         ; No specific messages were processed
         jmp .finishNotProcessed
         
-        ; UI defaults are initialzed on SHOWWINDOW event instead of INITDIALOG because
-        ; changes would not save for some reason (MSDN recommends INITDIALOG)
-        .wmShowWindow:
+        .wmInitDialog:
             ; Check the 'None' radio button
             invoke  CheckRadioButton,\
                     [dHandle],\
@@ -175,7 +176,44 @@ section '.text' code readable executable
                 jmp .wmDestroy
                 
             .wmc_ShowButton:
+                ; Get caption text
+                invoke  GetDlgItemTextW,\
+                        [dHandle],\
+                        IDC_WINDOWCAPTION,\
+                        td_text_caption,\
+                        td_text_size
+                        
+                ; Get instruction text
+                invoke  GetDlgItemTextW,\
+                        [dHandle],\
+                        IDC_BODYHEADER,\
+                        td_text_inst,\
+                        td_text_size
+                        
+                ; Get content text
+                invoke  GetDlgItemTextW,\
+                        [dHandle],\
+                        IDC_BODYTEXT,\
+                        td_text_content,\
+                        td_text_size
+                
+                ; Build the button bitflag from the checkbox states
+                
                 ; TODO
+                
+                ; Create and show the TaskDialog
+                invoke	TaskDialog,\
+                        [dHandle],\
+                        0,\
+                        td_text_caption,\
+                        td_text_inst,\
+                        td_text_content,\
+                        [td_buttons],\
+                        [td_icon],\
+                        td_result
+                
+                ; TODO
+                
                 jmp .finishProcessed
                 
         .wmDestroy:
@@ -208,10 +246,16 @@ section '.data' data readable writeable
     msg_Title	    du "TaskDialog Example", 0
     msg_InitError   du "There was a problem during initialization.", 0
     msg_LoopError   du "There was a problem when handling the message loop.",0
-    msg_CloseButton du "IDC_CLOSEBUTTON",0
     msg_helloWorld  du "Hello World!", 0
     msg_helloExamp  du "This is an example of the TaskDialog. This code sample also shows how to embed a manifest file, which is required to enable visual styles.", 0
     td_result	    dq ?
+    
+    td_text_size    = 1024
+    td_text_caption du td_text_size dup ?
+    td_text_inst    du td_text_size dup ?
+    td_text_content du td_text_size dup ?
+    td_icon         dq ?
+    td_buttons      dq ?
     
 section '.idata' import data readable writeable
 
