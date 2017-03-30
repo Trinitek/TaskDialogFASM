@@ -92,17 +92,12 @@ section '.text' code readable executable
                 [workArea.bottom],\
                 0,\
                 0,\
-                SWP_NOSIZE or SWP_NOZORDER; or SWP_SHOWWINDOW
+                SWP_NOSIZE or SWP_NOZORDER
                 
+        ; Used instead of SWP_SHOWWINDOW flag above in order to post WM_SHOWWINDOW message
         invoke  ShowWindow,\
                 [dHandle],\
                 SW_SHOW
-                
-        ;invoke  PostMessage,\
-        ;        [dHandle],\
-        ;        WM_INITDIALOG,\
-        ;        0,\
-        ;        0
         
         .messageLoop:
             ; Get next GUI message
@@ -122,20 +117,9 @@ section '.text' code readable executable
                     [dHandle],\
                     dMessage,\
             
-            ; If no messages were handled, translate and dispatch as normal
-            ;cmp rax, FALSE
-            ;jne @f
-            ;invoke  TranslateMessage,\
-            ;        dMessage
-            ;invoke  DispatchMessage,\
-            ;        dMessage
-            ;
-            ;@@:
             jmp .messageLoop
         
         .finish:
-        invoke  printf,\
-                msg_finished
         invoke  ExitProcess,\
                 0
         
@@ -150,10 +134,8 @@ section '.text' code readable executable
         mov [lParam], r9
             
         mov rax, [dMessage]
-        cmp eax, WM_INITDIALOG
-        je .wmInitDialog
         cmp eax, WM_SHOWWINDOW
-        je .wmInitDialog
+        je .wmShowWindow
         cmp eax, WM_COMMAND
         je .wmCommand
         cmp eax, WM_DESTROY
@@ -169,12 +151,16 @@ section '.text' code readable executable
         ; No specific messages were processed
         jmp .finishNotProcessed
         
-        .wmInitDialog:
+        ; UI defaults are initialzed on SHOWWINDOW event instead of INITDIALOG because
+        ; changes would not save for some reason (MSDN recommends INITDIALOG)
+        .wmShowWindow:
+            ; Check the 'None' radio button
             invoke  CheckRadioButton,\
                     [dHandle],\
                     IDC_NONEICON,\
                     IDC_WARNINGICON,\
                     IDC_NONEICON
+                    
             jmp .finishProcessed
         
         .wmCommand:
@@ -189,13 +175,12 @@ section '.text' code readable executable
                 jmp .wmDestroy
                 
             .wmc_ShowButton:
-                jmp .wmInitDialog
+                ; TODO
+                jmp .finishProcessed
                 
         .wmDestroy:
             invoke  PostQuitMessage,\
                     0
-            invoke  printf,\
-                    msg_destroy
                     
             jmp .finishProcessed
         
@@ -219,8 +204,6 @@ section '.data' data readable writeable
     dHandle         dq ?
     workArea        RECT
     dSize           RECT
-    newX            dq ?
-    newY            dq ?
 
     msg_Title	    du "TaskDialog Example", 0
     msg_InitError   du "There was a problem during initialization.", 0
@@ -229,13 +212,6 @@ section '.data' data readable writeable
     msg_helloWorld  du "Hello World!", 0
     msg_helloExamp  du "This is an example of the TaskDialog. This code sample also shows how to embed a manifest file, which is required to enable visual styles.", 0
     td_result	    dq ?
-    
-    msg_initdialog  db "WM_INITDIALOG",0x0A,0
-    msg_destroy     db "WM_DESTROY",0x0A,0
-    
-    msg_message     db "%d",0x0A,0
-    msg_looperr     db "Message loop error",0x0A,0
-    msg_finished    db "Finished",0x0A,0
     
 section '.idata' import data readable writeable
 
