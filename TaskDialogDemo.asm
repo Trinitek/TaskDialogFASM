@@ -23,9 +23,6 @@ section '.text' code readable executable
     start:
         and rsp, -16
         
-        invoke  InitCommonControlsEx,\
-                ccInit
-        
         invoke	TaskDialog,\
                 0,\
                 0,\
@@ -274,10 +271,6 @@ section '.text' code readable executable
     endp
     
 section '.data' data readable writeable
-
-    ccInit  INITCOMMONCONTROLSEX \
-	    8,\
-	    0
         
     dMessage        MSG
     dHandle         dq ?
@@ -288,7 +281,7 @@ section '.data' data readable writeable
     msg_InitError   du "There was a problem during initialization.", 0
     msg_LoopError   du "There was a problem when handling the message loop.",0
     msg_helloWorld  du "Hello World!", 0
-    msg_helloExamp  du "This is an example of the TaskDialog. This code sample also shows how to embed a manifest file, which is required to enable visual styles.", 0
+    msg_helloExamp  du "This is an example of the TaskDialog. This code sample also shows how to embed a manifest file, which is required to enable visual styles, into an external resource file compiled with the Win32 SDK's resource compiler.", 0
     td_result	    dq ?
     
     td_text_size    = 1024
