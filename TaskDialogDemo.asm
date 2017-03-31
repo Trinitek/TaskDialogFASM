@@ -198,8 +198,49 @@ section '.text' code readable executable
                         td_text_size
                 
                 ; Build the button bitflag from the checkbox states
+                macro   __SetButtonForCheckbox\
+                        checkbox*,\
+                        td_button_flag*
+                {
+                    invoke  IsDlgButtonChecked,\
+                            [dHandle],\
+                            checkbox
+                            
+                    cmp rax, BST_CHECKED
+                    jne @f
+                    or [td_buttons], td_button_flag
+                    @@:
+                }
                 
-                ; TODO
+                mov [td_buttons], 0
+                
+                __SetButtonForCheckbox  IDC_OKBUTTON,       TDCBF_OK_BUTTON
+                __SetButtonForCheckbox  IDC_YESBUTTON,      TDCBF_YES_BUTTON
+                __SetButtonForCheckbox  IDC_NOBUTTON,       TDCBF_NO_BUTTON
+                __SetButtonForCheckbox  IDC_CANCELBUTTON,   TDCBF_CANCEL_BUTTON
+                __SetButtonForCheckbox  IDC_RETRYBUTTON,    TDCBF_RETRY_BUTTON
+                __SetButtonForCheckbox  IDC_CLOSEBUTTON,    TDCBF_CLOSE_BUTTON
+                
+                ; Set the icon to use from the selected radio button
+                macro   __SetIconForRadio\
+                        radiobutton*,\
+                        td_icon_enum*
+                {
+                    invoke  IsDlgButtonChecked,\
+                            [dHandle],\
+                            radiobutton
+                            
+                    cmp rax, BST_CHECKED
+                    jne @f
+                    mov [td_icon], td_icon_enum
+                    @@:
+                }
+                
+                __SetIconForRadio   IDC_NONEICON,       0
+                __SetIconForRadio   IDC_ERRORICON,      TD_ERROR_ICON
+                __SetIconForRadio   IDC_INFORMATIONICON,TD_INFORMATION_ICON    
+                __SetIconForRadio   IDC_SHIELDICON,     TD_INFORMATION_SHIELD
+                __SetIconForRadio   IDC_WARNINGICON,    TD_WARNING_ICON
                 
                 ; Create and show the TaskDialog
                 invoke	TaskDialog,\
