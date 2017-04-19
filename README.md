@@ -9,7 +9,7 @@ This example showcases a number of things:
 ## Description of Files
 - `TaskDialogDemo.asm` -- the main code file
 - `resources.rc` -- the resource script containing the demo dialog box definition and manifest
-- `resource.h` -- produced by the resource compiler; exports a list of resource constants for use in a C program
+- `resource.h` -- produced by VS2017; exports a list of resource constants for use in a C program
 - `resource.inc` -- an adaptation of `resource.h` for use in `TaskDialogDemo.asm`
 - `manifest.xml` -- the manifest file, required by Windows to enable visual styles
 

@@ -1,5 +1,5 @@
 
-format PE64 console 6.0
+format PE64 GUI 6.0
 entry start
 
     include "win64a.inc"
@@ -250,8 +250,6 @@ section '.text' code readable executable
                         [td_icon],\
                         td_result
                 
-                ; TODO
-                
                 jmp .finishProcessed
                 
         .wmDestroy:
@@ -295,14 +293,10 @@ section '.idata' import data readable writeable
 
     library kernel32,'KERNEL32.DLL',\
             comctl32,'COMCTL32.DLL',\
-            user32,'USER32.DLL',\
-            msvcrt,'MSVCRT.DLL'
+            user32,'USER32.DLL'
     
     include 'api/kernel32.inc'
     include 'api/user32.inc'
     include 'COMCTL32_TD_API.inc'
-    
-    import  msvcrt,\
-            printf,'printf'
     
 section '.rsrc' data readable resource from 'resources.res'
